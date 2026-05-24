@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4281A4B5-2A71-0FDD-0AEC-6A60A56A81E5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HexTools</RootNamespace>
+    <AssemblyName>HexTools</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)**\*.vb</DefaultItemExcludes>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>bin\Debug\HexTools.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\HexTools.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="BasicTools">
+      <HintPath>..\BasicTools\bin\Debug\BasicTools.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic.PowerPacks, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFHexaEditor, Version=2.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\WPFHexaEditor.2.1.7\lib\net47\WPFHexaEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.ComponentModel" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="!Editor_AddressPicker.Designer.cs">
+      <DependentUpon>!Editor_AddressPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="!Editor_ImagePreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="!Editor_ImagePreview.Designer.cs">
+      <DependentUpon>!Editor_ImagePreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="!Editor_HexAddress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="!Editor_HexAddress.Designer.cs">
+      <DependentUpon>!Editor_HexAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BitFormat.cs" />
+    <Compile Include="!Editor_AddressPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HexAddress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexAddress.Designer.cs">
+      <DependentUpon>HexAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexAddressBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexAddressBox.Designer.cs">
+      <DependentUpon>HexAddressBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexCompress.cs" />
+    <Compile Include="HexFile.cs" />
+    <Compile Include="HexGimpPalettePorter.cs" />
+    <Compile Include="HexImagePalettePorter.cs" />
+    <Compile Include="HexPalette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexPalette.Designer.cs">
+      <DependentUpon>HexPalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexPalettePorter.cs" />
+    <Compile Include="IBitFormat.cs" />
+    <Compile Include="IHexCompress.cs" />
+    <Compile Include="UInt24.cs" />
+    <Compile Include="Int24.cs" />
+    <Compile Include="My Project\MyNamespace.Static.1.Designer.cs" />
+    <Compile Include="My Project\MyNamespace.Static.2.Designer.cs" />
+    <Compile Include="My Project\MyNamespace.Static.3.Designer.cs" />
+    <Compile Include="!Editor_Find.Designer.cs">
+      <DependentUpon>!Editor_Find.cs</DependentUpon>
+    </Compile>
+    <Compile Include="!Editor_Find.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="!Editor_GoTo.Designer.cs">
+      <DependentUpon>!Editor_GoTo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="!Editor_GoTo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HexByteViewer.Designer.cs">
+      <DependentUpon>HexByteViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexByteViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexDeveloper.Designer.cs">
+      <DependentUpon>HexDeveloper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexDeveloper.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexEditor.Designer.cs">
+      <DependentUpon>HexEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexEnumerations.cs" />
+    <Compile Include="HexMessageBox.Designer.cs">
+      <DependentUpon>HexMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexMessageBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HexTools.cs" />
+    <Compile Include="HexViewer.Designer.cs">
+      <DependentUpon>HexViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.cs" />
+    <Compile Include="My Project\Application.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="HexStructures.cs" />
+    <Compile Include="Sprite.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="!Editor_AddressPicker.resx">
+      <DependentUpon>!Editor_AddressPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="!Editor_Find.resx">
+      <DependentUpon>!Editor_Find.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="!Editor_ImagePreview.resx">
+      <DependentUpon>!Editor_ImagePreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="!Editor_GoTo.resx">
+      <DependentUpon>!Editor_GoTo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="!Editor_HexAddress.resx">
+      <DependentUpon>!Editor_HexAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexAddress.resx">
+      <DependentUpon>HexAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexAddressBox.resx">
+      <DependentUpon>HexAddressBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexByteViewer.resx">
+      <DependentUpon>HexByteViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexDeveloper.resx">
+      <DependentUpon>HexDeveloper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexEditor.resx">
+      <DependentUpon>HexEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexMessageBox.resx">
+      <DependentUpon>HexMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexPalette.resx">
+      <DependentUpon>HexPalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexViewer.resx">
+      <DependentUpon>HexViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>HexTools.My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>HexTools.My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Resources\EBCDIC-NoSpecialChar.tbl" />
+    <None Include="Resources\EBCDIC.tbl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Magnify+.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Magnify-.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

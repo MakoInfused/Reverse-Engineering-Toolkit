@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6B60ABD6-DAD9-01FC-0980-FB0980845278}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>BasicTools</RootNamespace>
+    <AssemblyName>BasicTools</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)**\*.vb</DefaultItemExcludes>
+    <LangVersion>latest</LangVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>bin\Debug\BasicTools.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>bin\Release\BasicTools.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\Microsoft.Extensions.DependencyInjection.7.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\Microsoft.Extensions.DependencyInjection.Abstractions.7.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="AnyClone, Version=1.1.6.0, Culture=neutral, PublicKeyToken=ce8a1a9d68396c39, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\AnyClone.1.1.6\lib\net47\AnyClone.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic.PowerPacks, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\DBZ LotSS Editor\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.ComponentModel" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BasicControls.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BasicDefinition.cs" />
+    <Compile Include="BasicDefinitionManager.cs" />
+    <Compile Include="BasicFieldPath.cs" />
+    <Compile Include="BasicFormatStringEditor.cs" />
+    <Compile Include="BasicLogger.cs" />
+    <Compile Include="BasicPorter.cs" />
+    <Compile Include="BasicPorterArgs.cs" />
+    <Compile Include="BasicPropertyManager.cs" />
+    <Compile Include="BasicRange.cs" />
+    <Compile Include="BasicStringCollectionEditor.cs" />
+    <Compile Include="FlagEnumEditor.cs" />
+    <Compile Include="GenericTypeConverter.cs" />
+    <Compile Include="IBasicDefinition.cs" />
+    <Compile Include="IBasicManager.cs" />
+    <Compile Include="BasicPorterContainer.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="ITypeConverter.cs" />
+    <Compile Include="My Project\MyNamespace.Static.1.Designer.cs" />
+    <Compile Include="My Project\MyNamespace.Static.2.Designer.cs" />
+    <Compile Include="My Project\MyNamespace.Static.3.Designer.cs" />
+    <Compile Include="BasicBitFlag.Designer.cs">
+      <DependentUpon>BasicBitFlag.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicBitFlag.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BasicBitFlags.Designer.cs">
+      <DependentUpon>BasicBitFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicBitFlags.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BasicColorSwatch.Designer.cs">
+      <DependentUpon>BasicColorSwatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicColorSwatch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BasicExperimentalControl.Designer.cs">
+      <DependentUpon>BasicExperimentalControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicExperimentalControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor_BasicColorCreator.Designer.cs">
+      <DependentUpon>Editor_BasicColorCreator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor_BasicColorCreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editor_BasicColorSelector.Designer.cs">
+      <DependentUpon>Editor_BasicColorSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor_BasicColorSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicConstants.cs" />
+    <Compile Include="BasicEnumerations.cs" />
+    <Compile Include="BasicTools.cs" />
+    <Compile Include="Editor_BasicBaseCollection.Designer.cs">
+      <DependentUpon>Editor_BasicBaseCollection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor_BasicBaseCollection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Editor_MultiCollection.Designer.cs">
+      <DependentUpon>Editor_MultiCollection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Editor_MultiCollection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.cs" />
+    <Compile Include="My Project\Application.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="BasicSingleton.cs" />
+    <Compile Include="BasicSizeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicSizeForm.Designer.cs">
+      <DependentUpon>BasicSizeForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BasicBitFlag.resx">
+      <DependentUpon>BasicBitFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicBitFlags.resx">
+      <DependentUpon>BasicBitFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicColorSwatch.resx">
+      <DependentUpon>BasicColorSwatch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicControls.resx">
+      <DependentUpon>BasicControls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicExperimentalControl.resx">
+      <DependentUpon>BasicExperimentalControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor_BasicColorCreator.resx">
+      <DependentUpon>Editor_BasicColorCreator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor_BasicColorSelector.resx">
+      <DependentUpon>Editor_BasicColorSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor_BasicBaseCollection.resx">
+      <DependentUpon>Editor_BasicBaseCollection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Editor_MultiCollection.resx">
+      <DependentUpon>Editor_MultiCollection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>BasicTools.My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicSizeForm.resx">
+      <DependentUpon>BasicSizeForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="obj\app.config" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>BasicTools.My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="My Resources\arrow_pointer_down_16.png" />
+    <Content Include="My Resources\arrow_pointer_up_16.png" />
+    <Content Include="My Resources\arrow_sans_down_16.png" />
+    <Content Include="My Resources\arrow_sans_down_16_with_seperator.png" />
+    <Content Include="Resources\OrderedList.png" />
+    <None Include="Resources\Reload.png" />
+    <None Include="Resources\Add.png" />
+    <None Include="Resources\Remove.png" />
+    <None Include="Resources\select16.png" />
+    <None Include="Resources\Order.png" />
+    <None Include="Resources\redo16.png" />
+    <None Include="Resources\undo16.png" />
+    <None Include="Resources\CopyData.png" />
+    <None Include="Resources\Paste.png" />
+    <None Include="Resources\Copy.png" />
+    <None Include="Resources\Cut.png" />
+    <None Include="Resources\trash32.png" />
+    <None Include="packages.config" />
+    <None Include="Resources\Up.png" />
+    <None Include="Resources\Down.png" />
+    <None Include="Resources\AddMore.png" />
+    <None Include="Resources\PasteHS.bmp" />
+    <None Include="Resources\CopyHS.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
