@@ -419,7 +419,7 @@ namespace HexTools
                 Control Control = (Control)Owner;
                 if (Control != null)
                 {
-                    string ControlName = Control is Form ? Control.Text : Control.Name;
+                    string ControlName = Control is Form ? Control.Text.ExtractBetween('[', ']') : Control.Name;
                     if (ListBox != null)
                     {
                         return Conversions.ToString(BasicHelper.ToTitleCase(Conversions.ToString(Operators.AddObject(ControlName + " ", ((dynamic) ListBox.SelectedItem).Text))));

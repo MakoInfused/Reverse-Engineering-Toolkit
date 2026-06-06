@@ -201,6 +201,7 @@
     <Compile Include="BasicSizeForm.Designer.cs">
       <DependentUpon>BasicSizeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BasicBitFlag.resx">
