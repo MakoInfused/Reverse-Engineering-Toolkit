@@ -1,4 +1,11 @@
-﻿using System;
+﻿using BasicTools;
+using BasicTools.BasicControls;
+using HexTools.HexEnumerations;
+using HexTools.HexStructures;
+using HexTools.My.Resources;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -8,6 +15,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,13 +23,6 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
-using BasicTools;
-using BasicTools.BasicControls;
-using HexTools.HexEnumerations;
-using HexTools.HexStructures;
-using HexTools.My.Resources;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace HexTools
 {
@@ -6575,6 +6576,24 @@ namespace HexTools
             }
         }
 
+        private string TextWithoutSeparators
+        {
+            get
+            {
+                if(int.TryParse(
+                    Text,
+                    NumberStyles.AllowThousands,
+                    CultureInfo.InvariantCulture,
+                    out var numberText
+                ))
+                {
+                    return numberText.ToString();
+                }
+
+                return Text;
+            }
+        }
+
         #endregion
 
         #region  Events 
@@ -6680,6 +6699,7 @@ namespace HexTools
         private void TypeText(HexNumericBox param_text, char param_char)
         {
             int lv_last = param_text.SelectionStart;
+            int text_length = TextWithoutSeparators.Length;
             if (OvertypeMode == true)
             {
                 if (param_text.SelectionStart < param_text.Text.Length)
@@ -6688,11 +6708,11 @@ namespace HexTools
                     param_text.SelectionStart = lv_last + 1;
                 }
             }
-            else if (param_text.Text.Length - param_text.SelectionLength < param_text.MaxLength)
+            else if (text_length - param_text.SelectionLength < param_text.MaxLength)
             {
                 param_text.SelectedText = Conversions.ToString(param_char);
             }
-            else if (param_text.Text.Length < param_text.MaxLength)
+            else if (text_length < param_text.MaxLength)
             {
                 param_text.Text += Conversions.ToString(param_char);
                 param_text.SelectionStart = lv_last + 1;
