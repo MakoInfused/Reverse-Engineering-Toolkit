@@ -5722,7 +5722,8 @@ namespace HexTools
             if (TempTableType == TableType.Stat)
             {
                 int[] StartingRows = new[] { 1, 5, 1, 8, 8, 8, 8, 25, 25, 15, 15, 1, 1 };
-                return StartingRows[GetIndex()] - 1;
+                int index = GetIndex();
+                return index >= 0 ? StartingRows[index] - 1 : 1;
             }
             return 0;
         }
@@ -5732,7 +5733,8 @@ namespace HexTools
             if (TempTableType == TableType.Stat)
             {
                 bool[] Disabled = new[] { false, false, false, false, false, false, false, false, true, true, true, false, true };
-                return Disabled[GetIndex()];
+                int index = GetIndex();
+                return index >= 0 ? Disabled[index] : true;
             }
             return false;
         }
