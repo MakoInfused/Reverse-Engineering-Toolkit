@@ -1341,6 +1341,28 @@ namespace HexTools
             throw new Exception($"BytesToInt converter does not exist for {typeof(T).Name}!");
         }
 
+        public static string GetOffset(string offset, HexAddressFormatType type, int index = 0)
+        {
+            string hexOffset = offset.Replace("0x", "&H");
+            switch (type)
+            {
+                case HexAddressFormatType.Index:
+                    hexOffset = IntToHex(index, 5);
+                    break;
+                case HexAddressFormatType.PC:
+                    hexOffset = IntToHex(SnesToPC(hexOffset, true), 5);
+                    break;
+                case HexAddressFormatType.SNES_LoROM:
+                    hexOffset = IntToHex(PCToSnes(hexOffset, true), 5);
+                    break;
+                case HexAddressFormatType.Raw:
+                default:
+                    break;
+            }
+
+            return hexOffset;
+        }
+
         #endregion
 
     }
@@ -2083,7 +2105,9 @@ namespace HexTools
 
         public static ICollection<dynamic> GetCollectionDefinition(string fieldPath)
         {
-            return GetCollectionDefinition<dynamic>(fieldPath).ToList();
+            return fieldPath.Split(',')
+                .SelectMany(x => GetCollectionDefinition<dynamic>(x))
+                .ToList();
         }
 
         public static void SetDefinition(string fieldPath, object value)
@@ -2308,6 +2332,7 @@ namespace HexTools
         public int WriteLength = 0;
         private bool IgnoreListBox = false;
         private HexListBox ListBox = null;
+        private bool IsLoading = false;
 
         protected Label label = new Label();
 
@@ -2320,6 +2345,7 @@ namespace HexTools
             label.Cursor = Cursors.Default;
             label.TextAlign = ContentAlignment.MiddleRight;
             Controls.Add(label);
+            TextChanged += Me_TextChanged;
             KeyPress += Me_KeyPress;
             KeyDown += Me_KeyDown;
             Leave += Me_Leave;
@@ -2610,8 +2636,17 @@ namespace HexTools
             set
             {
                 label.Text = value;
+                // changes the labels right margin to stick inside the right side of the textbox
                 SendMessage(Handle, 0xD3, (IntPtr)2, (IntPtr)(LabelWidth() << 16));
                 OnResize(EventArgs.Empty);
+                label.Left = Right - label.Width - 8;
+                if (Parent?.Parent?.GetType() == typeof(HexMessageBox))
+                {
+                    // FIXME: Remove this ugly hardcoding, why does the textbox in the HexMessageBox
+                    // not have the correct "Right" value?
+                    label.Left = 500 - label.Width;
+                }
+                label.BackColor = Bytes.Count(@byte => @byte != 0x0) > WriteLength ? Color.Red : Color.LightGray;
             }
         }
 
@@ -2738,6 +2773,14 @@ namespace HexTools
 
         #region  Events 
 
+        private void Me_TextChanged(object sender, EventArgs e)
+        {
+            if (IsLoading) return;
+
+            PerformUserInput();
+            DrawMaxLengthLabel();
+        }
+
         private void Me_KeyPress(object sender, KeyPressEventArgs e)
         {
             switch (Strings.AscW(e.KeyChar))
@@ -2845,7 +2888,7 @@ namespace HexTools
         {
             if (Display == DisplayType.Text)
             {
-                Bytes = FontTable != null ? FontTable.FontTable.GetBytes(Text) : HexConvert.StringToBytes(Text, false);
+                Bytes = FontTable != null ? FontTable.FontTable.GetBytes(ReplaceNewLine(Text, true).ToString()) : HexConvert.StringToBytes(Text, false);
             }
             UserInput?.Invoke(this, EventArgs.Empty);
         }
@@ -3043,6 +3086,7 @@ namespace HexTools
             if (!MaxLengthLabel)
                 return;
             byte[] lv_bytes = bytes != null ? bytes : Bytes;
+            Bytes = lv_bytes;
             LabelText = $"{lv_bytes.Count(@byte => @byte != 0x0)}/{WriteLength.ToString()}";
         }
 
@@ -3164,7 +3208,9 @@ namespace HexTools
 
         private void LoadText()
         {
+            IsLoading = true;
             Text = ConvertText(GetHexOffset());
+            IsLoading = false;
         }
 
         private void SaveText(int Offset)
@@ -4100,6 +4146,8 @@ namespace HexTools
             Items.Clear();
             foreach (var item in HexDefinitionManager.GetCollectionDefinition(Definition))
             {
+                //Allows data to be set which is unused because the fields don't exist
+                if (item.Offset == null && item.Name == null) continue;
                 var listItem = HexListBoxItem.FromDefinition(item);
                 Items.Add(listItem);
             }
@@ -4748,12 +4796,55 @@ namespace HexTools
             }
         }
 
+        private string _Definition = "";
+        [Description("Determines the field path that will be used to bind panel offset data from a definition (user settings) file.")]
+        [DefaultValue("")]
+        public string Definition
+        {
+            get
+            {
+                return _Definition;
+            }
+            set
+            {
+                if (_Definition != value)
+                {
+                    _Definition = value;
+                }
+            }
+        }
+
+        private HexAddressFormatType _DefinitionOffsetFormat = HexAddressFormatType.Raw;
+        [Description("Determines the format to convert offsets from the definition (user settings) file.")]
+        [DefaultValue(HexAddressFormatType.Raw)]
+        public HexAddressFormatType DefinitionOffsetFormat
+        {
+            get
+            {
+                return _DefinitionOffsetFormat;
+            }
+            set
+            {
+                if (_DefinitionOffsetFormat != value)
+                {
+                    _DefinitionOffsetFormat = value;
+                }
+            }
+        }
+
         #endregion
 
         #region  Public 
 
         public int CurrentOffset(int param_index)
         {
+            if(!string.IsNullOrEmpty(Definition))
+            {
+                var definition = HexDefinitionManager.GetDefinition(Definition);
+                var hexOffset = HexConvert.GetOffset((string)definition.Table.Offset, DefinitionOffsetFormat, param_index);
+                return Conversions.ToInteger(hexOffset);
+            }
+
             if (Conversions.ToDouble(Pointer) == 0d)
                 return 0;
             // The(SnesToPC) is hard coded at this time
@@ -4770,6 +4861,12 @@ namespace HexTools
 
         public int CurrentBitOffset(int param_index)
         {
+            if (!string.IsNullOrEmpty(Definition))
+            {
+                var definition = HexDefinitionManager.GetDefinition(Definition);
+                return (byte)definition.Table.Bit;
+            }
+
             return param_index * (int)IndexBitOffset % 8;
         }
 
@@ -4892,7 +4989,7 @@ namespace HexTools
         }
 
         private string _Definition = "";
-        [Description("Determines the field path that will be used to bind combobox items data from a definition (user settings) file.")]
+        [Description("Determines the field path that will be used to bind combobox items data from a definition (user settings) file. You can use a ',' comma to select mutliple sources. ")]
         [DefaultValue("")]
         public string Definition
         {
@@ -5144,22 +5241,7 @@ namespace HexTools
                     string hexOffset = "";
                     if(item.Offset != null)
                     {
-                        hexOffset = ((string)item.Offset).Replace("0x", "&H");
-                        switch (DefinitionOffsetFormat)
-                        {
-                            case HexAddressFormatType.Index:
-                                hexOffset = HexConvert.IntToHex(i, 5);
-                                break;
-                            case HexAddressFormatType.PC:
-                                hexOffset = HexConvert.IntToHex(HexConvert.SnesToPC(hexOffset, true), 5);
-                                break;
-                            case HexAddressFormatType.SNES_LoROM:
-                                hexOffset = HexConvert.IntToHex(HexConvert.PCToSnes(hexOffset, true), 5);
-                                break;
-                            case HexAddressFormatType.Raw:
-                            default:
-                                break;
-                        }
+                        hexOffset = HexConvert.GetOffset((string)item.Offset, DefinitionOffsetFormat, i);
                     }
                     else
                     {

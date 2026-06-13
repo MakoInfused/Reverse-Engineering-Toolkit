@@ -1,11 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace BasicTools
 {
-
     public partial class BasicExperimentalControl
     {
 
@@ -18,13 +16,15 @@ namespace BasicTools
             // Add any initialization after the InitializeComponent() call.
             SystemFormEvent.OnLifeCycleInitialized += (_, __) => SyncState();
             SystemFormEvent.OnLifeCyclePreferencesSaved += ConfirmationRefresh;
+
+            HasWarnings = ShowConfirmation;
         }
 
         private void SyncState()
         {
             if (Control != null)
             {
-                Control.Enabled = ShowConfirmation ? CheckBox.Checked : !CheckBox.Checked;
+                Control.Enabled = IsExperimental ? CheckBox.Checked : !CheckBox.Checked;
                 CheckBox.Text = !Control.Enabled ? "Enable Experimental" : "Disable Experimental";
             }
         }
@@ -33,7 +33,7 @@ namespace BasicTools
         {
             dynamic target = Sender;
             // TODO: I should use an interface here to determine if SupressUnsafeWarnings is true or not.
-            ShowConfirmation = !DynamicUtility.SafeAccess(() => target.SupressUnsafeWarnings, false);
+            HasWarnings = !DynamicUtility.SafeAccess(() => target.SupressUnsafeWarnings, false);
             SyncState();
         }
 
@@ -57,16 +57,19 @@ namespace BasicTools
             }
         }
 
+        private bool IsExperimental { get; set; } = true;
+        private bool HasWarnings { get; set; } = true;
+
         [Category("Behavior")]
         [Description("Marks the associated control as experimental, requiring extra user input to allow modification.")]
         [DefaultValue(true)]
-        public bool ShowConfirmation { get; set; }
+        public bool ShowConfirmation { get; set; } = true;
 
         private void CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             bool Checked = CheckBox.Checked;
             CheckBox.Checked = false;
-            SystemFormEvent.ConfirmDialog(this, Checked & ShowConfirmation, $"enable the {Control.Name} control", (x, y) =>
+            SystemFormEvent.ConfirmDialog(this, Checked && HasWarnings, $"enable the {Control.Name} control", (x, y) =>
                 {
                     CheckBox.Checked = Checked;
                     SyncState();

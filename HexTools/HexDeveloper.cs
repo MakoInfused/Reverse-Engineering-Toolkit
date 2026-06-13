@@ -1,14 +1,14 @@
-﻿using System;
+﻿using BasicTools;
+using HexTools.HexEnumerations;
+using HexTools.HexStructures;
+using Microsoft.VisualBasic.CompilerServices;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BasicTools;
-using HexTools.HexEnumerations;
-using HexTools.HexStructures;
-using Microsoft.VisualBasic.CompilerServices;
 using WpfHexaEditor.Core.Bytes;
 
 namespace HexTools
@@ -161,7 +161,8 @@ namespace HexTools
             {
                 case FindLocationType.Hex:
                     {
-                        Bytes = ByteConverters.HexToByte(Text).Select(Byte => new byte[] { Byte }).ToArray();
+                        Bytes = ByteConverters.HexToByte(string.Join(" ", Text.Chunk(2)))
+                            .Select(Byte => new byte[] { Byte }).ToArray();
                         break;
                     }
                 case FindLocationType.Tbl:

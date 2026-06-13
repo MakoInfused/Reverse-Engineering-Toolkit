@@ -1,4 +1,8 @@
-﻿using System;
+﻿using AnyClone;
+using Microsoft.CSharp.RuntimeBinder;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,10 +22,6 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using AnyClone;
-using Microsoft.CSharp.RuntimeBinder;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace BasicTools
 {
@@ -415,6 +415,20 @@ namespace BasicTools
             }
         }
 
+        public static string[] Chunk(this string text, int size)
+        {
+            List<string> result = new List<string>();
+
+            for (int i = 0; i < text.Length; i += size)
+            {
+                // Handles odd-length strings gracefully by taking remaining length
+                int length = Math.Min(size, text.Length - i);
+                result.Add(text.Substring(i, length));
+            }
+
+            return result.ToArray();
+        }
+
     }
 
     #endregion
@@ -732,11 +746,11 @@ namespace BasicTools
             try
             {
                 var resourceLocater = new Uri(baseUri, UriKind.Relative);
-                PackagePart exprCa = (PackagePart)typeof(Application).GetMethod("GetResourceOrContentPart", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { resourceLocater });
-                var stream = exprCa.GetStream();
-                var uri = new Uri((Uri)typeof(BaseUriHelper).GetProperty("PackAppBaseUri", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null, null), resourceLocater);
+                PackagePart exprCa = (PackagePart)typeof(Application)?.GetMethod("GetResourceOrContentPart", BindingFlags.NonPublic | BindingFlags.Static)?.Invoke(null, new object[] { resourceLocater });
+                var stream = exprCa?.GetStream();
+                var uri = new Uri((Uri)typeof(BaseUriHelper).GetProperty("PackAppBaseUri", BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null, null), resourceLocater);
                 var parserContext = new ParserContext() { BaseUri = uri };
-                typeof(XamlReader).GetMethod("LoadBaml", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { stream, parserContext, userControl, true });
+                typeof(XamlReader)?.GetMethod("LoadBaml", BindingFlags.NonPublic | BindingFlags.Static)?.Invoke(null, new object[] { stream, parserContext, userControl, true });
             }
             catch (Exception __unusedException1__)
             {
