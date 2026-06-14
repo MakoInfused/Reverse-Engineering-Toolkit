@@ -8208,7 +8208,7 @@ namespace HexTools
                                             ImageLockMode.WriteOnly,
                                             original.PixelFormat);
                 IntPtr originalPixelPointer = originalBitmapData.Scan0;
-                Marshal.Copy(rgbValues, 0, originalPixelPointer, StrideWidth * LengthHeight);
+                Marshal.Copy(rgbValues, 0, originalPixelPointer, Math.Min(rgbValues.Length, StrideWidth * LengthHeight));
                 original.UnlockBits(originalBitmapData);
                 Original = original;
 
