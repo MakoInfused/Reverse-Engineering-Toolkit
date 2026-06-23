@@ -982,9 +982,21 @@ namespace HexTools
 
         public static int HexToInt(string text)
         {
-            if (text.StartsWith("&H"))
+            if (string.IsNullOrWhiteSpace(text))
             {
-                return HexToIntRaw(text.Replace("&H", ""));
+                return 0;
+            }
+
+            text = text.Trim();
+
+            if (text.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                return HexToIntRaw(text.Substring(2));
+            }
+
+            if (text.StartsWith("&H", StringComparison.OrdinalIgnoreCase))
+            {
+                return HexToIntRaw(text.Substring(2));
             }
             else
             {
@@ -4188,7 +4200,7 @@ namespace HexTools
 
         public string CurrentOffset()
         {
-            if (SelectedIndex >= 0 && Conversions.ToInteger(Items[SelectedIndex].HexOffset) > 0)
+            if (SelectedIndex >= 0 && HexConvert.HexToInt(Items[SelectedIndex].HexOffset) > 0)
                 return Items[SelectedIndex].HexOffset;
             return "0";
         }
