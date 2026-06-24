@@ -6971,14 +6971,7 @@ namespace HexTools
 
         protected override void UpdateEditText()
         {
-            if (Display == DisplayType.Hex)
-            {
-                Text = Value.ToString().PadLeft(MaxLength * 2, '0');
-            }
-            else
-            {
-                base.UpdateEditText();
-            }
+            base.UpdateEditText();
         }
 
         #endregion
