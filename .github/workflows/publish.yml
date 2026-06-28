@@ -3,7 +3,6 @@ name: Publish .NET 4.7 Package to NuGet
 on:
   release:
     types: [published] # Triggers automatically when you publish a GitHub release
-  workflow_dispatch: # Allows you to manually trigger this build from the GitHub 
 
 jobs:
   build-and-publish:
