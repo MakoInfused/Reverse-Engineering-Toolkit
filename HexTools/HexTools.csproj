@@ -117,6 +117,7 @@
   <ItemGroup>
     <PackageReference Include="VisualBasic.PowerPacks.Vs" Version="1.0.0" />
     <PackageReference Include="WPFHexaEditor" Version="2.1.7" />
+	<PackageReference Include="System.Resources.Extensions" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
 	<!-- Explicitly forces the compiler to build the missing Trademark attribute -->

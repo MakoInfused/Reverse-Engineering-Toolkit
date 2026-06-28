@@ -114,6 +114,7 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="VisualBasic.PowerPacks.Vs" Version="1.0.0" />
+	<PackageReference Include="System.Resources.Extensions" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
 	  <!-- Explicitly forces the compiler to build the missing Trademark attribute -->
