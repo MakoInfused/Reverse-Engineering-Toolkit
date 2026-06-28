@@ -63,7 +63,11 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 2b. Compile using full Windows MSBuild instead of 'dotnet build'
+      # 2b. Generate the missing project.assets.json files
+      - name: Restore Dependencies
+        run: dotnet restore "Reverse Engineering Toolkit.sln"
+
+      # 2c. Compile using full Windows MSBuild instead of 'dotnet build'
       - name: Build Solution
         run: |
           msbuild "Reverse Engineering Toolkit.sln" `
@@ -73,7 +77,7 @@ jobs:
             /p:AssemblyVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0" `
             /p:FileVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0"
 
-      # 2c. Pack the compiled projects into packages safely using 'dotnet pack'
+      # 2d. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
         run: |
           dotnet pack "Reverse Engineering Toolkit.sln" `
