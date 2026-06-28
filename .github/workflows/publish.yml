@@ -63,14 +63,22 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 2b. Run clean, restore, and build in a single, unified execution chain
-      # This ensures the internal reference cache is evaluated in one contiguous session.
-      # By omitting the /p:Platform flag, it respects your exact solution configuration.
-      - name: Rebuild Solution
+      # 2b. Emulate Visual Studio's Solution-level restore
+      - name: Restore Dependencies
         run: |
-          msbuild "Reverse Engineering Toolkit.sln" /t:Clean,Restore,Build /p:Configuration=Release
+          msbuild "Reverse Engineering Toolkit.sln" /t:Restore /p:Configuration=Release
 
-      # 2c. Pack the compiled projects into packages safely using 'dotnet pack'
+      # 2c. Emulate Visual Studio's exact Solution Build button
+      # Specifying the exact solution-level properties forces cross-project reference paths to align
+      - name: Build Solution
+        run: |
+          msbuild "Reverse Engineering Toolkit.sln" `
+            /t:Build `
+            /p:Configuration=Release `
+            /p:Platform="Any CPU" `
+            /p:BuildInParallel=false
+
+      # 2d. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
         run: |
           dotnet pack "Reverse Engineering Toolkit.sln" `
