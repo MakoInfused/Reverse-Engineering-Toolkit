@@ -66,7 +66,7 @@ jobs:
       # 2b. Emulate Visual Studio's Solution-level restore
       - name: Restore Dependencies
         run: |
-          msbuild "Reverse Engineering Toolkit.sln" /t:Restore /p:Configuration=Release
+          msbuild "Reverse Engineering Toolkit.sln" /t:Restore /p:Configuration=Release /p:Platform="AnyCPU"
 
       # 2c. Explicitly build the base dependency project FIRST
       - name: Build BasicTools
