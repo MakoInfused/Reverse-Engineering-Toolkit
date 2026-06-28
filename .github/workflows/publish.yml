@@ -65,9 +65,15 @@ jobs:
 
       # 2b. Generate the missing project.assets.json files
       - name: Restore Dependencies
-        run: dotnet restore "Reverse Engineering Toolkit.sln"
+        run: |
+          msbuild "Reverse Engineering Toolkit.sln" -t:restore
 
-      # 2c. Compile using full Windows MSBuild instead of 'dotnet build'
+      # 2c. Purge all existing bin/ and obj/ folders across the solution
+      - name: Clean Build Folders
+        run: |
+          msbuild "Reverse Engineering Toolkit.sln" -t:clean /p:Configuration=Release
+
+      # 2d. Compile using full Windows MSBuild instead of 'dotnet build'
       - name: Build Solution
         run: |
           msbuild "Reverse Engineering Toolkit.sln" `
@@ -76,7 +82,7 @@ jobs:
             /p:AssemblyVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0" `
             /p:FileVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0"
 
-      # 2d. Pack the compiled projects into packages safely using 'dotnet pack'
+      # 2e. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
         run: |
           dotnet pack "Reverse Engineering Toolkit.sln" `
