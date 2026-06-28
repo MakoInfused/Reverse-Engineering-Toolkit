@@ -63,26 +63,14 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 2b. Generate the missing project.assets.json files
-      - name: Restore Dependencies
+      # 2b. Run clean, restore, and build in a single, unified execution chain
+      # This ensures the internal reference cache is evaluated in one contiguous session.
+      # By omitting the /p:Platform flag, it respects your exact solution configuration.
+      - name: Rebuild Solution
         run: |
-          msbuild "Reverse Engineering Toolkit.sln" -t:restore
+          msbuild "Reverse Engineering Toolkit.sln" /t:Clean,Restore,Build /p:Configuration=Release
 
-      # 2c. Purge all existing bin/ and obj/ folders across the solution
-      - name: Clean Build Folders
-        run: |
-          msbuild "Reverse Engineering Toolkit.sln" -t:clean /p:Configuration=Release
-
-      # 2d. Compile using full Windows MSBuild instead of 'dotnet build'
-      - name: Build Solution
-        run: |
-          msbuild "Reverse Engineering Toolkit.sln" `
-            /p:Configuration=Release `
-            /p:Version="${{ steps.versioning.outputs.NEW_VERSION }}" `
-            /p:AssemblyVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0" `
-            /p:FileVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0"
-
-      # 2e. Pack the compiled projects into packages safely using 'dotnet pack'
+      # 2c. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
         run: |
           dotnet pack "Reverse Engineering Toolkit.sln" `
