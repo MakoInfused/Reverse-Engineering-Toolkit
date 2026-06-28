@@ -68,17 +68,15 @@ jobs:
         run: |
           msbuild "Reverse Engineering Toolkit.sln" /t:Restore /p:Configuration=Release
 
-      # 2c. Emulate Visual Studio's exact Solution Build button
-      # Specifying the exact solution-level properties forces cross-project reference paths to align
-      - name: Build Solution
-        run: |
-          msbuild "Reverse Engineering Toolkit.sln" `
-            /t:Build `
-            /p:Configuration=Release `
-            /p:Platform="Any CPU" `
-            /p:BuildInParallel=false
+      # 2c. Explicitly build the base dependency project FIRST
+      - name: Build BasicTools
+        run: msbuild "BasicTools\BasicTools.csproj" /p:Configuration=Release /p:Platform="AnyCPU"
 
-      # 2d. Pack the compiled projects into packages safely using 'dotnet pack'
+      # 2d. Explicitly build the dependent project SECOND
+      - name: Build HexTools
+        run: msbuild "HexTools\HexTools.csproj" /p:Configuration=Release /p:Platform="AnyCPU"
+
+      # 2e. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
         run: |
           dotnet pack "Reverse Engineering Toolkit.sln" `
