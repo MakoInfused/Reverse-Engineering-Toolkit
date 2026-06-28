@@ -86,7 +86,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="obj\app.config" />
     <None Update="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.cs</LastGenOutput>
