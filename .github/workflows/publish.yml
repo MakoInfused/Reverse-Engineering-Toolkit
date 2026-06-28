@@ -59,16 +59,21 @@ jobs:
           # Save this computed version to the step outputs for downstream use
           echo "NEW_VERSION=$nextVersion" >> $env:GITHUB_OUTPUT
 
-      # 2a. Compile the entire solution first to generate all the required DLLs on disk
+      # 2a. Ensure MSBuild is available on the runner (Add this step)
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # 2b. Compile using full Windows MSBuild instead of 'dotnet build'
       - name: Build Solution
         run: |
-          dotnet build "Reverse Engineering Toolkit.sln" `
-            --configuration Release `
-            -p:Version="${{ steps.versioning.outputs.NEW_VERSION }}" `
-            -p:AssemblyVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0" `
-            -p:FileVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0"
+          msbuild "Reverse Engineering Toolkit.sln" `
+            /p:Configuration=Release `
+            /p:Platform="Any CPU" `
+            /p:Version="${{ steps.versioning.outputs.NEW_VERSION }}" `
+            /p:AssemblyVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0" `
+            /p:FileVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0"
 
-      # 2b. Pack the already-compiled assemblies into NuGet packages safely
+      # 2c. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
         run: |
           dotnet pack "Reverse Engineering Toolkit.sln" `
