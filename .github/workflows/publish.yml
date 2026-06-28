@@ -26,19 +26,36 @@ jobs:
         id: versioning
         shell: powershell
         run: |
+          # Get the tag name from the GitHub event context (e.g., "v1.2")
           $rawTag = "${{ github.event.release.tag_name }}"
-          $cleanTag = $rawTag.TrimStart("v")
-          $versionParts = $cleanTag.Split('.')
-          $major = [int]$versionParts
           
-          $minor = 0
-          if ($versionParts.Length -gt 1) {
-              $minor = [int]$versionParts + 1
+          # Handle edge case if no tag is found
+          if ([string]::IsNullOrEmpty($rawTag)) {
+              $rawTag = "1.0"
           }
           
-          # Compute the 3-digit NuGet/Assembly version
+          # Strip out any leading "v" if present
+          $cleanTag = $rawTag.TrimStart("v")
+          
+          # Parse version array components
+          $versionParts = $cleanTag.Split('.')
+          
+          # FIXED: Target explicit index [0] for major version
+          $major = [int]$versionParts[0]
+          
+          # FIXED: Target explicit index [1] for minor version and increment it
+          $minor = 0
+          if ($versionParts.Length -gt 1) {
+              $minor = [int]$versionParts[1] + 1
+          }
+          
+          # Construct the clean final package version (Major.IncrementedMinor.0)
           $nextVersion = "$major.$minor.0"
-          Write-Host "Computed auto-incremented version: $nextVersion"
+          
+          Write-Host "The parsed tag was: $rawTag"
+          Write-Host "The computed auto-incremented NuGet version is: $nextVersion"
+          
+          # Save this computed version to the step outputs for downstream use
           echo "NEW_VERSION=$nextVersion" >> $env:GITHUB_OUTPUT
 
       # 2. Build, Version, and Pack simultaneously using modern MSBuild arguments
