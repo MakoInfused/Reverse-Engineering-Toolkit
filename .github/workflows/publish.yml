@@ -35,10 +35,9 @@ jobs:
           }
           
           Write-Host "The parsed tag was: $rawTag"
-          Write-Host "The computed auto-incremented NuGet version is: $nextVersion"
           
           # Save this computed version to the step outputs for downstream use
-          echo "NEW_VERSION=$nextVersion" >> $env:GITHUB_OUTPUT
+          echo "NEW_VERSION=$rawTag" >> $env:GITHUB_OUTPUT
 
       # 2a. Compile the entire solution first to generate all the required DLLs on disk
       # Now that binding redirects are disabled, this will run smoothly
