@@ -34,24 +34,6 @@ jobs:
               $rawTag = "1.0"
           }
           
-          # Strip out any leading "v" if present
-          $cleanTag = $rawTag.TrimStart("v")
-          
-          # Parse version array components
-          $versionParts = $cleanTag.Split('.')
-          
-          # FIXED: Target explicit index [0] for major version
-          $major = [int]$versionParts[0]
-          
-          # FIXED: Target explicit index [1] for minor version and increment it
-          $minor = 0
-          if ($versionParts.Length -gt 1) {
-              $minor = [int]$versionParts[1] + 1
-          }
-          
-          # Construct the clean final package version (Major.IncrementedMinor.0)
-          $nextVersion = "$major.$minor.0"
-          
           Write-Host "The parsed tag was: $rawTag"
           Write-Host "The computed auto-incremented NuGet version is: $nextVersion"
           
