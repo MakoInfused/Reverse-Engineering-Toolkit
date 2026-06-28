@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
+	<!-- FIXES MSB3030: Prevents the SDK from trying to look for a non-existent obj\app.config file -->
+	<AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <OutputType>Library</OutputType>
     <MyType>Windows</MyType>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)**\*.vb</DefaultItemExcludes>
