@@ -54,9 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="BasicTools">
-      <HintPath>..\BasicTools\bin\Debug\BasicTools.dll</HintPath>
-    </Reference>
+	<ProjectReference Include="..\BasicTools\BasicTools.csproj" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Design" />
     <Reference Include="System.Data.DataSetExtensions" />
