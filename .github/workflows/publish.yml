@@ -66,15 +66,15 @@ jobs:
       # 2b. Emulate Visual Studio's Solution-level restore
       - name: Restore Dependencies
         run: |
-          msbuild "Reverse Engineering Toolkit.sln" /t:Restore /p:Configuration=Release /p:Platform="AnyCPU"
+          msbuild "Reverse Engineering Toolkit.sln" /t:Restore /p:Configuration=Release /p:Platform="Any CPU"
 
       # 2c. Explicitly build the base dependency project FIRST
       - name: Build BasicTools
-        run: msbuild "BasicTools\BasicTools.csproj" /p:Configuration=Release /p:Platform="AnyCPU"
+        run: msbuild "BasicTools\BasicTools.csproj" /p:Configuration=Release /p:Platform="Any CPU"
 
       # 2d. Explicitly build the dependent project SECOND
       - name: Build HexTools
-        run: msbuild "HexTools\HexTools.csproj" /p:Configuration=Release /p:Platform="AnyCPU"
+        run: msbuild "HexTools\HexTools.csproj" /p:Configuration=Release /p:Platform="Any CPU"
 
       # 2e. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
