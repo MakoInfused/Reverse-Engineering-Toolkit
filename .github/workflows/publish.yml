@@ -63,21 +63,20 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 2b. Generate the missing project.assets.json files
+      # 2b. Emulate Visual Studio's Solution-level restore
       - name: Restore Dependencies
-        run: dotnet restore "Reverse Engineering Toolkit.sln"
-
-      # 2c. Compile using full Windows MSBuild instead of 'dotnet build'
-      - name: Build Solution
         run: |
-          msbuild "Reverse Engineering Toolkit.sln" `
-            /p:Configuration=Release `
-            /p:Platform="Any CPU" `
-            /p:Version="${{ steps.versioning.outputs.NEW_VERSION }}" `
-            /p:AssemblyVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0" `
-            /p:FileVersion="${{ steps.versioning.outputs.NEW_VERSION }}.0"
+          msbuild "Reverse Engineering Toolkit.sln" /t:Restore /p:Configuration=Release /p:Platform="Any CPU"
 
-      # 2d. Pack the compiled projects into packages safely using 'dotnet pack'
+      # 2c. Explicitly build the base dependency project FIRST
+      - name: Build BasicTools
+        run: msbuild "BasicTools\BasicTools.csproj" /p:Configuration=Release /p:Platform="Any CPU"
+
+      # 2d. Explicitly build the dependent project SECOND
+      - name: Build HexTools
+        run: msbuild "HexTools\HexTools.csproj" /p:Configuration=Release /p:Platform="Any CPU"
+
+      # 2e. Pack the compiled projects into packages safely using 'dotnet pack'
       - name: Pack NuGet Packages
         run: |
           dotnet pack "Reverse Engineering Toolkit.sln" `
