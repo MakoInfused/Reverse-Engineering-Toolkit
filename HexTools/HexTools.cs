@@ -3209,7 +3209,7 @@ namespace HexTools
                     }
                 case DisplayType.Hex:
                     {
-                        lv_text = HexConvert.BytesToHex(lv_bytes);
+                        lv_text = HexConvert.BytesToHex(lv_bytes, WriteLength, WriteLength+1);
                         MaxLength = WriteLength;
                         break;
                     }
@@ -3308,7 +3308,7 @@ namespace HexTools
 
         public override void CopyData()
         {
-            Clipboard.SetData("Text", HexConvert.BytesToHex(Bytes, WriteLength));
+            Clipboard.SetData("Text", HexConvert.BytesToHex(Bytes, WriteLength, WriteLength+1));
         }
 
         #endregion
@@ -4718,6 +4718,24 @@ namespace HexTools
             }
         }
 
+        private HexAddressFormatType _PointerAddressFormat = HexAddressFormatType.PC;
+        [Description("Determines the format to convert pointer table offsets when they are retrieved from a pointer table.")]
+        [DefaultValue(HexAddressFormatType.PC)]
+        public HexAddressFormatType PointerAddressFormat
+        {
+            get
+            {
+                return _PointerAddressFormat;
+            }
+            set
+            {
+                if (_PointerAddressFormat != value)
+                {
+                    _PointerAddressFormat = value;
+                }
+            }
+        }
+
         private int _PointerBank;
         [Description("")]
         [DefaultValue(0)]
@@ -4859,7 +4877,6 @@ namespace HexTools
 
             if (Conversions.ToDouble(Pointer) == 0d)
                 return 0;
-            // The(SnesToPC) is hard coded at this time
             int pointerOffset = Conversions.ToInteger(Operators.AddObject(Conversions.ToInteger(Pointer) + param_index * Conversions.ToDouble(IndexOffset) + Math.Floor(param_index * (int)IndexBitOffset / 8d), PointerIgnoreHeader ? (object)0 : HexStorage.GlobalHexOffset));
             byte[] lv_bytes = MemoryLiterator.Read(pointerOffset, PointerLength).Buffer;
             if(PointerBank >= 0)
@@ -4868,7 +4885,22 @@ namespace HexTools
                 lv_bytes[lv_bytes.Length - 1] = (byte)PointerBank;
             }
             Array.Reverse(lv_bytes);
-            return Conversions.ToInteger(Operators.SubtractObject(HexConvert.SnesToPC(HexConvert.BytesToHex(lv_bytes), true), PointerIgnoreHeader ? HexStorage.GlobalHexOffset : (object)0));
+            int address = 0;
+            switch (PointerAddressFormat)
+            {
+                case HexAddressFormatType.Raw:
+                case HexAddressFormatType.SNES_LoROM:
+                    address = HexConvert.HexToIntRaw(HexConvert.BytesToHex(lv_bytes));
+                    break;
+                case HexAddressFormatType.Index:
+                    address = HexConvert.HexToIntRaw(HexConvert.BytesToHex(lv_bytes)) + HexConvert.HexToInt(IndexOffset);
+                    break;
+                case HexAddressFormatType.PC:
+                default:
+                    address = HexConvert.SnesToPC(HexConvert.BytesToHex(lv_bytes), true);
+                    break;
+            }
+            return Conversions.ToInteger(Operators.SubtractObject(address, PointerIgnoreHeader ? HexStorage.GlobalHexOffset : (object)0));
         }
 
         public int CurrentBitOffset(int param_index)
@@ -5525,7 +5557,7 @@ namespace HexTools
                 if (_HexOffsetCountType != value)
                 {
                     _HexOffsetCountType = value;
-                    HexOffsetCountPointer = value == OffsetType.Pointer | value == OffsetType.Indexed ? Math.Max(HexOffsetCountPointer, 1) : 0;
+                    HexOffsetCountPointer = value == OffsetType.Pointer || value == OffsetType.Indexed || value == OffsetType.Terminated ? Math.Max(HexOffsetCountPointer, 1) : 0;
                 }
             }
         }
@@ -5543,7 +5575,8 @@ namespace HexTools
             {
                 if (_HexOffsetCountPointer != value)
                 {
-                    if (HexOffsetCountType == OffsetType.Pointer | HexOffsetCountType == OffsetType.Indexed)
+                    if (HexOffsetCountType == OffsetType.Pointer || HexOffsetCountType == OffsetType.Indexed
+                        || HexOffsetCountType == OffsetType.Terminated)
                         value = Math.Max(value, 1);
                     else
                         value = 0;
@@ -5886,6 +5919,15 @@ namespace HexTools
             {
                 byte[] lv_bytes = MemoryLiterator.Read(lv_value, PointerLength).Buffer;
                 lv_value = Conversions.ToInteger(HexConvert.BytesToNumeric(lv_bytes));
+            }
+            if(Type == OffsetType.Terminated)
+            {
+                var originalOffset = lv_value;
+                var result = MemoryLiterator.Scan(originalOffset, [0xFF]);
+                if(result.Buffer != null)
+                {
+                    lv_value = (result.Offset - originalOffset) / PointerLength;
+                }
             }
             return lv_value;
         }

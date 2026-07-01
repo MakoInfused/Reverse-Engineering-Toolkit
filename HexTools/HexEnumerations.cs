@@ -10,7 +10,8 @@ namespace HexTools.HexEnumerations
         Relative,  // Based solely on this Controls Offset + Index
         Pointer,   // Uses this Controls Offset to determine the location of the pointer to the real location
         Indexed,   // Uses this Controls Offset + Index to determine the location of the pointer to the real location
-        Temporary // Based on this Controls Offset + Index + ListBoxOffset
+        Temporary, // Based on this Controls Offset + Index + ListBoxOffset
+        Terminated // Based on the existence of a terminating character FF
     }
 
     public enum EndianType
