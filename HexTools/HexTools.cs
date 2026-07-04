@@ -2287,6 +2287,10 @@ namespace HexTools
 
     public class HexUserControl : BasicUserControl, IHexControlContainer
     {
+        public HexUserControl()
+        {
+            AutoScaleDimensions = new SizeF(8f, 16f);
+        }
 
 
         public override void Active(OnControlProgress Progress)
@@ -2793,12 +2797,6 @@ namespace HexTools
                 SendMessage(Handle, 0xD3, (IntPtr)2, (IntPtr)(LabelWidth() << 16));
                 OnResize(EventArgs.Empty);
                 label.Left = Right - label.Width - 8;
-                if (Parent?.Parent?.GetType() == typeof(HexMessageBox))
-                {
-                    // FIXME: Remove this ugly hardcoding, why does the textbox in the HexMessageBox
-                    // not have the correct "Right" value?
-                    label.Left = 500 - label.Width;
-                }
                 label.BackColor = Bytes.Count(@byte => !SkipBytes.Contains(@byte)) > WriteLength ? Color.Red : Color.LightGray;
             }
         }
