@@ -35,6 +35,7 @@ namespace HexTools
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            HexTools.HexStringRow hexStringRow1 = new HexTools.HexStringRow();
             this.MessageBoxToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.PageControlPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ButtonAdd = new BasicTools.BasicControls.BasicButton();
@@ -265,6 +266,9 @@ namespace HexTools
             this._Text.Multiline = true;
             this._Text.Name = "_Text";
             this._Text.Size = new System.Drawing.Size(429, 168);
+            hexStringRow1.Columns = new string[] {
+        "0x00"};
+            this._Text.SkipCharacters = hexStringRow1;
             this._Text.TabIndex = 18;
             this._Text.TextChanged += new System.EventHandler(this._Text_TextChanged);
             // 

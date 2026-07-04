@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Design;
@@ -1129,6 +1130,34 @@ namespace HexTools
         private static int ReadInt32(byte[] buffer)
         {
             return (buffer[3] & 0xFF) << 24 | (buffer[2] & 0xFF) << 16 | (buffer[1] & 0xFF) << 8 | buffer[0] & 0xFF;
+        }
+
+        public static byte ParseFlexibleByte(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                throw new ArgumentException("Input string cannot be empty or null.");
+            }
+
+            string cleanInput = input.Trim();
+
+            // 1. Handle C-style Hexadecimal format ("0x00")
+            if (cleanInput.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                string hexPart = cleanInput.Substring(2);
+                return byte.Parse(hexPart, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            }
+
+            // 2. Handle VB-style Hexadecimal format ("&H00")
+            if (cleanInput.StartsWith("&H", StringComparison.OrdinalIgnoreCase))
+            {
+                string hexPart = cleanInput.Substring(2);
+                return byte.Parse(hexPart, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            }
+
+            // 3. Fallback to standard base-10 formatting ("255")
+            // It checks if it's a normal integer, and safely restricts it to a byte range (0-255)
+            return byte.Parse(cleanInput, NumberStyles.Integer, CultureInfo.InvariantCulture);
         }
 
         public static byte[] StringToBytes(string param_string, bool param_reverse)
@@ -2335,6 +2364,118 @@ namespace HexTools
 
     #endregion
 
+    #region HexStringRow
+
+    [TypeConverter(typeof(HexStringRowConverter))]
+    public class HexStringRow
+    {
+        // The collection editor will natively display this string array as an editable collection!
+        [Category("Row Data")]
+        [Description("The string values for each column in this row.")]
+        public string[] Columns { get; set; } = Array.Empty<string>();
+
+        // This controls what displays on the left-hand menu side of the editor
+        public override string ToString()
+        {
+            if (Columns == null || Columns.Length == 0) return "Empty Row";
+            return $"Columns: [{string.Join(", ", Columns)}]";
+        }
+    }
+
+    public class HexMatrix
+    {
+        [Category("Matrix Setup")]
+        [Description("A list of rows containing string-formatted hexadecimal or string data.")]
+        // Using standard CollectionEditor works perfectly here because it natively supports List<CustomClass>
+        [Editor(typeof(CollectionEditor), typeof(UITypeEditor))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public List<HexStringRow> Rows { get; set; } = new List<HexStringRow>();
+
+        // Helper method to convert your clean string data back into a raw 2D byte array whenever needed
+        public byte[,] To2DByteArray(int definedColumnCount)
+        {
+            if (Rows == null || Rows.Count == 0) return new byte[0, 0];
+
+            byte[,] matrix = new byte[Rows.Count, definedColumnCount];
+
+            for (int r = 0; r < Rows.Count; r++)
+            {
+                for (int c = 0; c < definedColumnCount; c++)
+                {
+                    if (Rows[r].Columns != null && c < Rows[r].Columns.Length)
+                    {
+                        string cellValue = Rows[r].Columns[c]?.Trim();
+                        if (string.IsNullOrEmpty(cellValue)) continue;
+
+                        // Strip away optional hex designators if present
+                        if (cellValue.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                        {
+                            cellValue = cellValue.Substring(2);
+                        }
+
+                        // Attempt base-16 parse first, fall back to base-10
+                        if (byte.TryParse(cellValue, System.Globalization.NumberStyles.HexNumber, null, out byte parsedByte))
+                        {
+                            matrix[r, c] = parsedByte;
+                        }
+                        else if (byte.TryParse(cellValue, out byte normalByte))
+                        {
+                            matrix[r, c] = normalByte;
+                        }
+                    }
+                }
+            }
+            return matrix;
+        }
+    }
+
+    public class HexStringRowConverter : TypeConverter
+    {
+        // Tell the editor we can convert from string inputs
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            if (sourceType == typeof(string)) return true;
+            return base.CanConvertFrom(context, sourceType);
+        }
+
+        // Convert from the comma-separated string in [DefaultValue] to a HexStringRow instance
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if (value is string stringValue)
+            {
+                var row = new HexStringRow();
+                if (!string.IsNullOrWhiteSpace(stringValue))
+                {
+                    // Split by commas, trim extra whitespace, and assign to columns array
+                    row.Columns = stringValue.Split(',')
+                                             .Select(s => s.Trim())
+                                             .ToArray();
+                }
+                return row;
+            }
+            return base.ConvertFrom(context, culture, value);
+        }
+
+        // Convert back to string format if the PropertyGrid needs a text representation
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            if (destinationType == typeof(string)) return true;
+            return base.CanConvertTo(context, destinationType);
+        }
+
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(string) && value is HexStringRow row)
+            {
+                if (row.Columns == null) return string.Empty;
+                return string.Join(",", row.Columns);
+            }
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
+
+    #endregion
+
     #region  HexTextBox 
 
     public class HexTextBox : BasicTextBox, IHexControl
@@ -2658,7 +2799,7 @@ namespace HexTools
                     // not have the correct "Right" value?
                     label.Left = 500 - label.Width;
                 }
-                label.BackColor = Bytes.Count(@byte => @byte != 0x0) > WriteLength ? Color.Red : Color.LightGray;
+                label.BackColor = Bytes.Count(@byte => !SkipBytes.Contains(@byte)) > WriteLength ? Color.Red : Color.LightGray;
             }
         }
 
@@ -2666,6 +2807,46 @@ namespace HexTools
         [Description("If true then the control will automatically display the current and max length of characters.")]
         [DefaultValue(false)]
         public bool MaxLengthLabel { get; set; } = false;
+
+        [Category("Function")]
+        [Description("If true then the control will automatically display the current and max length of characters.")]
+        [DefaultValue("0x00")]
+        public HexStringRow SkipCharacters { get; set; } = new HexStringRow { Columns = ["0x00"]};
+
+        public bool ShouldSerializeSkipCharacters()
+        {
+            // Define what the factory default baseline looks like
+            string[] defaultValues = ["0x00"];
+
+            if (SkipCharacters == null || SkipCharacters.Columns == null) return true;
+            if (SkipCharacters.Columns.Length != defaultValues.Length) return true;
+
+            for (int i = 0; i < defaultValues.Length; i++)
+            {
+                if (SkipCharacters.Columns[i] != defaultValues[i]) return true;
+            }
+
+            return false; // The row matches the exact default state; no code generation needed
+        }
+
+        // This handles what happens when a developer right-clicks your property and selects "Reset"
+        public void ResetISkipCharacters()
+        {
+            SkipCharacters = new HexStringRow { Columns = ["0x00"] };
+        }
+
+        [Browsable(false)]
+        [EditorBrowsableAttribute(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public byte[] SkipBytes
+        {
+            get
+            {
+                return SkipCharacters.Columns
+                    .Select(HexConvert.ParseFlexibleByte)
+                    .ToArray();
+            }
+        }
 
         [Category("Function")]
         [Description("The text which will be interpreted as a line break.")]
@@ -3099,7 +3280,7 @@ namespace HexTools
                 return;
             byte[] lv_bytes = bytes != null ? bytes : Bytes;
             Bytes = lv_bytes;
-            LabelText = $"{lv_bytes.Count(@byte => @byte != 0x0)}/{WriteLength.ToString()}";
+            LabelText = $"{lv_bytes.Count(@byte => !SkipBytes.Contains(@byte))}/{WriteLength.ToString()}";
         }
 
         private int _OriginalOffset;

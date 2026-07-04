@@ -620,6 +620,16 @@ namespace BasicTools
             return null;
         }
 
+        public static Control GetChildByType<T>(this Control StartingContainer)
+        {
+            foreach (Control child in FindAllChildren(ref StartingContainer))
+            {
+                if (child is T)
+                    return child;
+            }
+            return null;
+        }
+
         public static Control GetChildByName(ref Control StartingContainer, string CheckedName)
         {
             foreach (Control child in FindAllChildren(ref StartingContainer))
@@ -675,6 +685,18 @@ namespace BasicTools
         }
 
         public static object FindParent<T>(ref Control StartingContainer)
+        {
+            var Parent = StartingContainer;
+            while (!(Parent == null))
+            {
+                if (Parent is T)
+                    return Parent;
+                Parent = Parent.Parent;
+            }
+            return null;
+        }
+
+        public static object FindParent<T>(this Control StartingContainer)
         {
             var Parent = StartingContainer;
             while (!(Parent == null))
