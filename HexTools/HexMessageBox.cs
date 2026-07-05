@@ -3,6 +3,7 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace HexTools
 {
@@ -126,17 +127,26 @@ namespace HexTools
                 if (_DisplayMode != value)
                 {
                     _DisplayMode = value;
-
-                    LabelPortrait.Visible = Portrait.Visible = ButtonQuote.Visible = ButtonClose.Visible =
-                    ButtonLast.Visible = ButtonNext.Visible = LabelPages.Visible = ButtonAdd.Visible =
-                    ButtonRemove.Visible = _DisplayMode == HexMessageBoxDisplayMode.Paged;
+                    RefreshDisplayMode();
                 }
             }
+        }
+
+        private void RefreshDisplayMode()
+        {
+            LabelPortrait.Visible = Portrait.Visible = ButtonQuote.Visible = ButtonClose.Visible =
+                                ButtonLast.Visible = ButtonNext.Visible = LabelPages.Visible = ButtonAdd.Visible =
+                                ButtonRemove.Visible = ToolPanel.Visible = PortraitPanel.Visible = _DisplayMode == HexMessageBoxDisplayMode.Paged;
+
+            _Text.Location = _DisplayMode == HexMessageBoxDisplayMode.Paged
+                ? new Point(0, 71)
+                : new Point(0, 0);
         }
 
         public HexMessageBox()
         {
             InitializeComponent();
+            RefreshDisplayMode();
         }
 
         private void RedrawPagePanel()
